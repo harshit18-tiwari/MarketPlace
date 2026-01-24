@@ -13,8 +13,8 @@ function Navbar({ user, setUser }) {
   return (
     <nav className="navbar">
       <div className="container navbar-content">
-        <h1 onClick={() => navigate('/')}>🛒 Student Marketplace</h1>
-        <div>
+        <h1 onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>🛒 Student Marketplace</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           <Link to="/products">Products</Link>
           {user ? (
             <>
@@ -22,7 +22,7 @@ function Navbar({ user, setUser }) {
                 <Link to="/products/create">Sell Product</Link>
               )}
               <Link to="/orders">My Orders</Link>
-              <span style={{ color: '#fff', marginLeft: '1rem' }}>
+              <span style={{ color: '#fff', padding: '0 0.5rem', borderLeft: '2px solid rgba(255,255,255,0.3)', paddingLeft: '1.5rem' }}>
                 Welcome, {user.name}
               </span>
               <button onClick={handleLogout}>Logout</button>
