@@ -28,7 +28,7 @@ function Register({ setUser }) {
     try {
       const userData = await register(formData);
       setUser(userData);
-      navigate('/products');
+      navigate('/shop');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     } finally {
@@ -38,34 +38,37 @@ function Register({ setUser }) {
 
   return (
     <div className="auth-container">
-      <h2>Register</h2>
+      <h2>✨ Register</h2>
       {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Name</label>
+          <label>👤 Name</label>
           <input
             type="text"
             name="name"
+            placeholder="Enter your name"
             value={formData.name}
             onChange={handleChange}
             required
           />
         </div>
         <div className="form-group">
-          <label>Email</label>
+          <label>📧 Email</label>
           <input
             type="email"
             name="email"
+            placeholder="your.email@example.com"
             value={formData.email}
             onChange={handleChange}
             required
           />
         </div>
         <div className="form-group">
-          <label>Password</label>
+          <label>🔑 Password</label>
           <input
             type="password"
             name="password"
+            placeholder="At least 6 characters"
             value={formData.password}
             onChange={handleChange}
             required
@@ -73,14 +76,14 @@ function Register({ setUser }) {
           />
         </div>
         <div className="form-group">
-          <label>I want to:</label>
+          <label>🎯 I want to:</label>
           <select name="role" value={formData.role} onChange={handleChange}>
-            <option value="buyer">Buy products</option>
-            <option value="seller">Sell products</option>
+            <option value="buyer">🛍️ Buy products</option>
+            <option value="seller">💼 Sell products</option>
           </select>
         </div>
         <button type="submit" className="btn" disabled={loading}>
-          {loading ? 'Registering...' : 'Register'}
+          {loading ? '⏳ Registering...' : '🚀 Register'}
         </button>
       </form>
       <div className="auth-switch">

@@ -26,7 +26,7 @@ function Login({ setUser }) {
     try {
       const userData = await login(formData);
       setUser(userData);
-      navigate('/products');
+      navigate('/shop');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     } finally {
@@ -36,31 +36,33 @@ function Login({ setUser }) {
 
   return (
     <div className="auth-container">
-      <h2>Login</h2>
+      <h2>🔐 Login</h2>
       {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Email</label>
+          <label>📧 Email</label>
           <input
             type="email"
             name="email"
+            placeholder="your.email@example.com"
             value={formData.email}
             onChange={handleChange}
             required
           />
         </div>
         <div className="form-group">
-          <label>Password</label>
+          <label>🔑 Password</label>
           <input
             type="password"
             name="password"
+            placeholder="Enter your password"
             value={formData.password}
             onChange={handleChange}
             required
           />
         </div>
         <button type="submit" className="btn" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? '⏳ Logging in...' : '🚀 Login'}
         </button>
       </form>
       <div className="auth-switch">
