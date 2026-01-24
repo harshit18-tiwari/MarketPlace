@@ -4,154 +4,163 @@ function Home() {
   const navigate = useNavigate();
 
   return (
-    <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
-      <h1 style={{ 
-        fontSize: '3.5rem', 
-        background: 'linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.8) 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        marginBottom: '1rem',
-        fontWeight: '800',
-        textShadow: '0 2px 20px rgba(0,0,0,0.1)',
-        animation: 'fadeInDown 0.8s ease-out'
-      }}>
-        Welcome to Student Marketplace 🎓
-      </h1>
-      <p style={{ 
-        fontSize: '1.3rem', 
-        color: 'rgba(255,255,255,0.95)', 
-        marginBottom: '2.5rem',
-        fontWeight: '300',
-        animation: 'fadeIn 1s ease-out'
-      }}>
-        Buy and sell textbooks, electronics, furniture, and more!
-      </p>
-      <div style={{ 
-        display: 'flex', 
-        gap: '1rem', 
-        justifyContent: 'center',
-        flexWrap: 'wrap',
-        animation: 'fadeInUp 1s ease-out'
-      }}>
-        <button 
-          className="btn" 
-          style={{ 
-            width: 'auto', 
-            padding: '1rem 2.5rem',
-            fontSize: '1.1rem',
-            background: 'rgba(255, 255, 255, 0.95)',
-            color: '#667eea',
-            boxShadow: '0 8px 25px rgba(0,0,0,0.2)'
-          }}
-          onClick={() => navigate('/products')}
-        >
-          🛍️ Browse Products
-        </button>
-        <button 
-          className="btn" 
-          style={{ 
-            width: 'auto', 
-            padding: '1rem 2.5rem',
-            fontSize: '1.1rem',
-            background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-            boxShadow: '0 8px 25px rgba(245, 87, 108, 0.4)'
-          }}
-          onClick={() => navigate('/register')}
-        >
-          🚀 Get Started
-        </button>
-      </div>
-      
-      <div style={{ 
-        marginTop: '5rem', 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-        gap: '2rem',
-        animation: 'fadeInUp 1.2s ease-out'
-      }}>
-        <div style={{ 
-          padding: '2.5rem', 
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-          borderRadius: '20px', 
-          boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
-          transition: 'all 0.3s',
-          cursor: 'pointer'
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-10px)'}
-        onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        onClick={() => navigate('/products')}
-        >
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📚</div>
-          <h3 style={{ 
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            marginBottom: '1rem',
-            fontSize: '1.5rem',
-            fontWeight: '700'
-          }}>Books & Textbooks</h3>
-          <p style={{ color: '#666', lineHeight: '1.6' }}>Save money on expensive textbooks and find great deals</p>
+    <div className="home-page">
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="hero-content">
+          <h1 className="hero-title">
+            Discover Amazing Products
+            <br />
+            <span className="hero-gradient">At Unbeatable Prices</span>
+          </h1>
+          <p className="hero-subtitle">
+            Your one-stop destination for quality products, fast shipping, and incredible deals.
+            Shop with confidence and style!
+          </p>
+          <div className="hero-buttons">
+            <button 
+              className="btn-hero-primary" 
+              onClick={() => navigate('/register')}
+            >
+              🚀 Start Shopping Now
+            </button>
+            <button 
+              className="btn-hero-secondary" 
+              onClick={() => navigate('/login')}
+            >
+              Already a member? Login
+            </button>
+          </div>
+          
+          {/* Stats */}
+          <div className="hero-stats">
+            <div className="stat-item">
+              <div className="stat-number">10K+</div>
+              <div className="stat-label">Products</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">50K+</div>
+              <div className="stat-label">Happy Customers</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">99%</div>
+              <div className="stat-label">Satisfaction</div>
+            </div>
+          </div>
         </div>
-        <div style={{ 
-          padding: '2.5rem', 
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-          borderRadius: '20px', 
-          boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
-          transition: 'all 0.3s',
-          cursor: 'pointer'
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-10px)'}
-        onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        onClick={() => navigate('/products')}
-        >
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💻</div>
-          <h3 style={{ 
-            background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            marginBottom: '1rem',
-            fontSize: '1.5rem',
-            fontWeight: '700'
-          }}>Electronics</h3>
-          <p style={{ color: '#666', lineHeight: '1.6' }}>Find laptops, tablets, and more tech essentials</p>
+
+        {/* Decorative Elements */}
+        <div className="hero-decoration">
+          <div className="floating-card card-1">
+            <span className="emoji">📱</span>
+            <span>Electronics</span>
+          </div>
+          <div className="floating-card card-2">
+            <span className="emoji">👗</span>
+            <span>Fashion</span>
+          </div>
+          <div className="floating-card card-3">
+            <span className="emoji">🏠</span>
+            <span>Home & Living</span>
+          </div>
         </div>
-        <div style={{ 
-          padding: '2.5rem', 
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-          borderRadius: '20px', 
-          boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
-          transition: 'all 0.3s',
-          cursor: 'pointer'
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-10px)'}
-        onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-        onClick={() => navigate('/products')}
-        >
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🛋️</div>
-          <h3 style={{ 
-            background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            marginBottom: '1rem',
-            fontSize: '1.5rem',
-            fontWeight: '700'
-          }}>Furniture</h3>
-          <p style={{ color: '#666', lineHeight: '1.6' }}>Furnish your dorm room affordably and stylishly</p>
+      </section>
+
+      {/* Features Section */}
+      <section className="features-section">
+        <h2 className="section-title">Why Shop With Us?</h2>
+        <div className="features-grid">
+          <div className="feature-card">
+            <div className="feature-icon">🚚</div>
+            <h3>Fast Delivery</h3>
+            <p>Get your orders delivered quickly with our express shipping options</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon">🔒</div>
+            <h3>Secure Payment</h3>
+            <p>Shop with confidence using our secure payment gateway</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon">💎</div>
+            <h3>Premium Quality</h3>
+            <p>All products are verified for quality and authenticity</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon">🎁</div>
+            <h3>Great Deals</h3>
+            <p>Enjoy exclusive discounts and special offers daily</p>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* Categories Section */}
+      <section className="categories-section">
+        <h2 className="section-title">Shop by Category</h2>
+        <div className="categories-grid">
+          <div 
+            className="category-card" 
+            onClick={() => navigate('/register')}
+          >
+            <div className="category-icon">📚</div>
+            <h3>Books & Media</h3>
+            <p>Bestsellers, eBooks, and more</p>
+          </div>
+          <div 
+            className="category-card"
+            onClick={() => navigate('/register')}
+          >
+            <div className="category-icon">💻</div>
+            <h3>Electronics</h3>
+            <p>Latest gadgets and tech</p>
+          </div>
+          <div 
+            className="category-card"
+            onClick={() => navigate('/register')}
+          >
+            <div className="category-icon">👕</div>
+            <h3>Fashion</h3>
+            <p>Trending styles for everyone</p>
+          </div>
+          <div 
+            className="category-card"
+            onClick={() => navigate('/register')}
+          >
+            <div className="category-icon">🏠</div>
+            <h3>Home & Living</h3>
+            <p>Beautiful home essentials</p>
+          </div>
+          <div 
+            className="category-card"
+            onClick={() => navigate('/register')}
+          >
+            <div className="category-icon">⚽</div>
+            <h3>Sports & Fitness</h3>
+            <p>Stay active and healthy</p>
+          </div>
+          <div 
+            className="category-card"
+            onClick={() => navigate('/register')}
+          >
+            <div className="category-icon">🎨</div>
+            <h3>Arts & Crafts</h3>
+            <p>Creative supplies and tools</p>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="cta-section">
+        <div className="cta-content">
+          <h2>Ready to Start Shopping?</h2>
+          <p>Join thousands of happy customers and discover amazing deals today!</p>
+          <button 
+            className="btn-cta"
+            onClick={() => navigate('/register')}
+          >
+            Create Your Account - It's Free! 🎉
+          </button>
+        </div>
+      </section>
     </div>
   );
 }

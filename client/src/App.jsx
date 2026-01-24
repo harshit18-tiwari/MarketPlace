@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
+import Shop from './pages/Shop';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ProductList from './pages/ProductList';
@@ -33,12 +34,27 @@ function App() {
       <div className="App">
         <Navbar user={user} setUser={setUser} />
         <div className="main-content">
-          <div className="container">
+          <div className={user ? "container" : ""}>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login setUser={setUser} />} />
-              <Route path="/register" element={<Register setUser={setUser} />} />
-              <Route path="/products" element={<ProductList />} />
+              <Route path="/" element={user ? <Navigate to="/shop" /> : <Home />} />
+              <Route path="/login" element={user ? <Navigate to="/shop" /> : <Login setUser={setUser} />} />
+              <Route path="/register" element={user ? <Navigate to="/shop" /> : <Register setUser={setUser} />} />
+              <Route 
+                path="/shop" 
+                element={
+                  <ProtectedRoute>
+                    <Shop />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/products" 
+                element={
+                  <ProtectedRoute>
+                    <ProductList />
+                  </ProtectedRoute>
+                } 
+              />
               <Route 
                 path="/products/create" 
                 element={

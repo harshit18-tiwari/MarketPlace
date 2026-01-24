@@ -26,7 +26,7 @@ function Login({ setUser }) {
     try {
       const userData = await login(formData);
       setUser(userData);
-      navigate('/products');
+      navigate('/shop');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     } finally {

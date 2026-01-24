@@ -28,7 +28,7 @@ function Register({ setUser }) {
     try {
       const userData = await register(formData);
       setUser(userData);
-      navigate('/products');
+      navigate('/shop');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     } finally {

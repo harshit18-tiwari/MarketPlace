@@ -3,33 +3,33 @@ function Footer() {
     <footer className="footer">
       <div className="container footer-content">
         <div className="footer-section">
-          <h3>🛒 Student Marketplace</h3>
-          <p>Your trusted platform for buying and selling student essentials</p>
+          <h3>🛒 ShopHub</h3>
+          <p>Your trusted e-commerce destination for quality products and amazing deals</p>
         </div>
         
         <div className="footer-section">
           <h4>Quick Links</h4>
           <ul>
-            <li><a href="/products">Browse Products</a></li>
-            <li><a href="/register">Get Started</a></li>
-            <li><a href="/login">Login</a></li>
+            <li><a href="/shop">Shop Now</a></li>
+            <li><a href="/register">Create Account</a></li>
+            <li><a href="/login">Sign In</a></li>
           </ul>
         </div>
         
         <div className="footer-section">
           <h4>Categories</h4>
           <ul>
-            <li>📚 Books & Textbooks</li>
+            <li>📚 Books & Media</li>
             <li>💻 Electronics</li>
-            <li>🛋️ Furniture</li>
-            <li>👕 Clothing</li>
+            <li>👕 Fashion</li>
+            <li>🏠 Home & Living</li>
           </ul>
         </div>
         
         <div className="footer-section">
           <h4>Connect</h4>
           <div className="footer-social">
-            <span>📧 support@studentmarketplace.com</span>
+            <span>📧 support@shophub.com</span>
             <span>📱 Follow us on social media</span>
           </div>
         </div>
@@ -37,8 +37,8 @@ function Footer() {
       
       <div className="footer-bottom">
         <div className="container">
-          <p>&copy; 2026 Student Marketplace. All rights reserved.</p>
-          <p>Made with ❤️ for students</p>
+          <p>&copy; 2026 ShopHub. All rights reserved.</p>
+          <p>Made with ❤️ for shoppers worldwide</p>
         </div>
       </div>
     </footer>
