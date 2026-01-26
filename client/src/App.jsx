@@ -11,6 +11,7 @@ import Register from "./pages/Register";
 import ProductList from "./pages/ProductList";
 import CreateProduct from "./pages/CreateProduct";
 import MyOrders from "./pages/MyOrders";
+import OrderDetails from "./pages/OrderDetails";
 import Rent from "./pages/Rent";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
@@ -126,6 +127,15 @@ function App() {
               element={
                 <ProtectedRoute user={user}>
                   <MyOrders />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/orders/:id"
+              element={
+                <ProtectedRoute user={user}>
+                  <OrderDetails />
                 </ProtectedRoute>
               }
             />
