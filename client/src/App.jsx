@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute, BuyerRoute, SellerRoute, PublicRoute } from "./components/ProtectedRoutes";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -16,28 +17,21 @@ import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import ProductDetails from "./pages/ProductDetails";
 
-import { getCurrentUser } from "./api";
+// Seller Pages
+import SellerDashboard from "./pages/SellerDashboard";
+import SellerProducts from "./pages/SellerProducts";
+import SellerOrders from "./pages/SellerOrders";
 
 
-// ---------- Route Guards ----------
-const ProtectedRoute = ({ user, children }) => {
-  return user ? children : <Navigate to="/login" />;
-};
-
-const SellerRoute = ({ user, children }) => {
-  return user && (user.role === "seller" || user.role === "admin")
-    ? children
-    : <Navigate to="/" />;
-};
 
 // Layout wrapper to conditionally show Navbar/Footer
-function Layout({ user, setUser, children }) {
+function Layout({ children }) {
   const location = useLocation();
   const hideNavAndFooter = location.pathname === '/login' || location.pathname === '/register';
 
   return (
     <>
-      {!hideNavAndFooter && <Navbar user={user} setUser={setUser} />}
+      {!hideNavAndFooter && <Navbar />}
       <div className="main-content w-full">
         {children}
       </div>
@@ -49,14 +43,6 @@ function Layout({ user, setUser, children }) {
 
 // ---------- App Component ----------
 function App() {
-
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const currentUser = getCurrentUser();
-    setUser(currentUser);
-  }, []);
-
   return (
     <Router
       future={{
@@ -64,116 +50,166 @@ function App() {
         v7_relativeSplatPath: true
       }}
     >
-      <div className="App w-full min-h-screen overflow-x-hidden">
+      <AuthProvider>
+        <div className="App w-full min-h-screen overflow-x-hidden">
+          <Layout>
+            <Routes>
 
-        <Layout user={user} setUser={setUser}>
+              {/* Public Routes */}
+              <Route
+                path="/"
+                element={
+                  <PublicRoute>
+                    <Home />
+                  </PublicRoute>
+                }
+              />
 
-          <Routes>
+              <Route
+                path="/login"
+                element={
+                  <PublicRoute>
+                    <Login />
+                  </PublicRoute>
+                }
+              />
 
-            <Route
-              path="/"
-              element={user ? <Navigate to="/shop" /> : <Home />}
-            />
+              <Route
+                path="/register"
+                element={
+                  <PublicRoute>
+                    <Register />
+                  </PublicRoute>
+                }
+              />
 
-            <Route
-              path="/login"
-              element={user ? <Navigate to="/shop" /> : <Login setUser={setUser} />}
-            />
+              {/* Buyer-Only Routes */}
+              <Route
+                path="/shop"
+                element={
+                  <BuyerRoute>
+                    <Shop />
+                  </BuyerRoute>
+                }
+              />
 
-            <Route
-              path="/register"
-              element={user ? <Navigate to="/shop" /> : <Register setUser={setUser} />}
-            />
+              <Route
+                path="/cart"
+                element={
+                  <BuyerRoute>
+                    <Cart />
+                  </BuyerRoute>
+                }
+              />
 
-            <Route
-              path="/shop"
-              element={
-                <ProtectedRoute user={user}>
-                  <Shop />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/rent"
+                element={
+                  <BuyerRoute>
+                    <Rent />
+                  </BuyerRoute>
+                }
+              />
 
-            <Route
-              path="/products"
-              element={
-                <ProtectedRoute user={user}>
-                  <ProductList />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/orders"
+                element={
+                  <BuyerRoute>
+                    <MyOrders />
+                  </BuyerRoute>
+                }
+              />
 
-            <Route
-              path="/product/:id"
-              element={
-                <ProtectedRoute user={user}>
-                  <ProductDetails />
-                </ProtectedRoute>
-              }
-            />
+              {/* Seller-Only Routes */}
+              <Route
+                path="/seller/dashboard"
+                element={
+                  <SellerRoute>
+                    <SellerDashboard />
+                  </SellerRoute>
+                }
+              />
 
-            <Route
-              path="/products/create"
-              element={
-                <SellerRoute user={user}>
-                  <CreateProduct />
-                </SellerRoute>
-              }
-            />
+              <Route
+                path="/seller/products"
+                element={
+                  <SellerRoute>
+                    <SellerProducts />
+                  </SellerRoute>
+                }
+              />
 
-            <Route
-              path="/orders"
-              element={
-                <ProtectedRoute user={user}>
-                  <MyOrders />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/seller/products/create"
+                element={
+                  <SellerRoute>
+                    <CreateProduct />
+                  </SellerRoute>
+                }
+              />
 
-            <Route
-              path="/rent"
-              element={
-                <ProtectedRoute user={user}>
-                  <Rent />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/seller/products/edit/:id"
+                element={
+                  <SellerRoute>
+                    <CreateProduct />
+                  </SellerRoute>
+                }
+              />
 
-            <Route
-              path="/cart"
-              element={
-                <ProtectedRoute user={user}>
-                  <Cart />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/seller/orders"
+                element={
+                  <SellerRoute>
+                    <SellerOrders />
+                  </SellerRoute>
+                }
+              />
 
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute user={user}>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
+              {/* Shared Protected Routes (Both Buyers & Sellers) */}
+              <Route
+                path="/products"
+                element={
+                  <ProtectedRoute>
+                    <ProductList />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute user={user}>
-                  <div style={{ padding: "2rem", textAlign: "center" }}>
-                    <h2>Settings Page</h2>
-                    <p>Settings page coming soon...</p>
-                  </div>
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/product/:id"
+                element={
+                  <ProtectedRoute>
+                    <ProductDetails />
+                  </ProtectedRoute>
+                }
+              />
 
-          </Routes>
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
 
-        </Layout>
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <div style={{ padding: "2rem", textAlign: "center" }}>
+                      <h2>Settings Page</h2>
+                      <p>Settings page coming soon...</p>
+                    </div>
+                  </ProtectedRoute>
+                }
+              />
 
-      </div>
+            </Routes>
+          </Layout>
+        </div>
+      </AuthProvider>
     </Router>
   );
 }

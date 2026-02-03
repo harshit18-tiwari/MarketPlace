@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getProducts, getCurrentUser } from '../api';
 import { formatINR } from '../utils/currency';
-import { Search, ShoppingBag, Book, Laptop, Sofa, Shirt, Package, ChevronLeft, ChevronRight, Info, User, Loader2 } from 'lucide-react';
+import { Search, ShoppingBag, Book, Laptop, Sofa, Shirt, Package, ChevronLeft, ChevronRight, Info, User, Loader2, Dumbbell } from 'lucide-react';
 
 function Shop() {
   const navigate = useNavigate();
@@ -64,6 +64,7 @@ function Shop() {
     { value: 'Electronics', label: 'Electronics', icon: Laptop },
     { value: 'Furniture', label: 'Furniture', icon: Sofa },
     { value: 'Clothing', label: 'Clothing', icon: Shirt },
+    { value: 'Sports', label: 'Sports & Fitness', icon: Dumbbell },
     { value: 'Other', label: 'Other', icon: Package }
   ];
 

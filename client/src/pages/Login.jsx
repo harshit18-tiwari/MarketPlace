@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { login } from '../api';
+import { useAuth } from '../contexts/AuthContext';
+import { login as apiLogin } from '../api';
 import { Mail, Lock, LogIn, Loader2, AlertCircle, ShoppingBag, ArrowLeft, Home } from 'lucide-react';
 
-function Login({ setUser }) {
+function Login() {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -25,11 +27,16 @@ function Login({ setUser }) {
     setLoading(true);
 
     try {
-      const userData = await login(formData);
-      setUser(userData);
+      const userData = await apiLogin(formData);
+      login(userData);
       // Remove new user flag for returning users
       localStorage.removeItem('isNewUser');
-      navigate('/shop');
+      // Redirect based on role
+      if (userData.role === 'seller' || userData.role === 'admin') {
+        navigate('/seller/dashboard');
+      } else {
+        navigate('/shop');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     } finally {

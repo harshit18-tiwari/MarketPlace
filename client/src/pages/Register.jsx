@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { register } from '../api';
+import { useAuth } from '../contexts/AuthContext';
+import { register as apiRegister } from '../api';
 import { User, Mail, Lock, Target, UserPlus, Loader2, AlertCircle, ShoppingBag, Briefcase, ArrowLeft, Home } from 'lucide-react';
 
-function Register({ setUser }) {
+function Register() {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,11 +29,16 @@ function Register({ setUser }) {
     setLoading(true);
 
     try {
-      const userData = await register(formData);
-      setUser(userData);
+      const userData = await apiRegister(formData);
+      login(userData);
       // Mark user as newly registered
       localStorage.setItem('isNewUser', 'true');
-      navigate('/shop');
+      // Redirect based on role
+      if (userData.role === 'seller' || userData.role === 'admin') {
+        navigate('/seller/dashboard');
+      } else {
+        navigate('/shop');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     } finally {

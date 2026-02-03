@@ -84,6 +84,14 @@ export const getMyOrders = async () => {
   return response.data;
 };
 
+// Get all orders (for sellers/admin)
+export const getOrders = async () => {
+  const response = await axios.get(`${API_URL}/orders`, {
+    headers: getAuthHeader()
+  });
+  return response.data;
+};
+
 // Razorpay API
 export const createRazorpayOrder = async (orderData) => {
   const response = await axios.post(`${API_URL}/orders/razorpay/create`, orderData, {

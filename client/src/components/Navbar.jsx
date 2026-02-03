@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { logout } from '../api';
+import { useAuth } from '../contexts/AuthContext';
 import { 
   ShoppingCart, 
   User, 
@@ -12,11 +12,13 @@ import {
   PlusCircle,
   Settings,
   LogOut,
-  Package
+  Package,
+  LayoutDashboard
 } from 'lucide-react';
 
-function Navbar({ user, setUser }) {
+function Navbar() {
   const navigate = useNavigate();
+  const { user, logout: authLogout, isBuyer, isSeller } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [cartItemCount, setCartItemCount] = useState(0);
@@ -48,8 +50,7 @@ function Navbar({ user, setUser }) {
   }, []);
 
   const handleLogout = () => {
-    logout();
-    setUser(null);
+    authLogout();
     setIsProfileOpen(false);
     navigate('/');
   };
@@ -96,28 +97,54 @@ function Navbar({ user, setUser }) {
           <div className="hidden md:flex items-center gap-1 flex-1 justify-center">
             {user ? (
               <>
-                <Link 
-                  to="/shop" 
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-700 font-medium hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-600 transition-all duration-200"
-                >
-                  <Store className="w-4 h-4" />
-                  Shop
-                </Link>
-                <Link 
-                  to="/rent" 
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-700 font-medium hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-600 transition-all duration-200"
-                >
-                  <Tag className="w-4 h-4" />
-                  Rent
-                </Link>
-                {(user.role === 'seller' || user.role === 'admin') && (
-                  <Link 
-                    to="/products/create" 
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-700 font-medium hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-600 transition-all duration-200"
-                  >
-                    <PlusCircle className="w-4 h-4" />
-                    Sell
-                  </Link>
+                {isBuyer() ? (
+                  <>
+                    <Link 
+                      to="/shop" 
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-700 font-medium hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-600 transition-all duration-200"
+                    >
+                      <Store className="w-4 h-4" />
+                      Shop
+                    </Link>
+                    <Link 
+                      to="/rent" 
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-700 font-medium hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-600 transition-all duration-200"
+                    >
+                      <Tag className="w-4 h-4" />
+                      Rent
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link 
+                      to="/seller/dashboard" 
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-700 font-medium hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-600 transition-all duration-200"
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      Dashboard
+                    </Link>
+                    <Link 
+                      to="/seller/products" 
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-700 font-medium hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-600 transition-all duration-200"
+                    >
+                      <Package className="w-4 h-4" />
+                      Products
+                    </Link>
+                    <Link 
+                      to="/seller/orders" 
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-700 font-medium hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-600 transition-all duration-200"
+                    >
+                      <ShoppingCart className="w-4 h-4" />
+                      Orders
+                    </Link>
+                    <Link 
+                      to="/seller/products/create" 
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-gray-700 font-medium hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 hover:text-primary-600 transition-all duration-200"
+                    >
+                      <PlusCircle className="w-4 h-4" />
+                      Add Product
+                    </Link>
+                  </>
                 )}
               </>
             ) : (
@@ -141,19 +168,21 @@ function Navbar({ user, setUser }) {
           {/* Right Side - Cart & Profile */}
           {user && (
             <div className="hidden md:flex items-center gap-4">
-              {/* Cart Icon */}
-              <Link 
-                to="/cart" 
-                className="relative p-2.5 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 transition-all duration-200 group"
-                aria-label="Shopping cart"
-              >
-                <ShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-primary-600 transition-colors" />
-                {cartItemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg animate-pulse">
-                    {cartItemCount}
-                  </span>
-                )}
-              </Link>
+              {/* Cart Icon - Only for Buyers */}
+              {isBuyer() && (
+                <Link 
+                  to="/cart" 
+                  className="relative p-2.5 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50 transition-all duration-200 group"
+                  aria-label="Shopping cart"
+                >
+                  <ShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-primary-600 transition-colors" />
+                  {cartItemCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg animate-pulse">
+                      {cartItemCount}
+                    </span>
+                  )}
+                </Link>
+              )}
 
               {/* Profile Dropdown */}
               <div className="relative" ref={dropdownRef}>
@@ -184,14 +213,25 @@ function Navbar({ user, setUser }) {
                         <User className="w-5 h-5" />
                         <span className="font-medium text-sm">My Profile</span>
                       </Link>
-                      <Link 
-                        to="/orders" 
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-                        onClick={closeDropdown}
-                      >
-                        <Package className="w-5 h-5" />
-                        <span className="font-medium text-sm">My Orders</span>
-                      </Link>
+                      {isBuyer() ? (
+                        <Link 
+                          to="/orders" 
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={closeDropdown}
+                        >
+                          <Package className="w-5 h-5" />
+                          <span className="font-medium text-sm">My Orders</span>
+                        </Link>
+                      ) : (
+                        <Link 
+                          to="/seller/dashboard" 
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+                          onClick={closeDropdown}
+                        >
+                          <LayoutDashboard className="w-5 h-5" />
+                          <span className="font-medium text-sm">Dashboard</span>
+                        </Link>
+                      )}
                       <Link 
                         to="/settings" 
                         className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"

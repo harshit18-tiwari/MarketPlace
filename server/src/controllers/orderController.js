@@ -3,9 +3,16 @@ import Product from "../models/Product.js";
 
 // @desc    Create a new order
 // @route   POST /api/orders
-// @access  Private
+// @access  Private (Buyer only)
 export const createOrder = async (req, res) => {
   try {
+    // Additional role check - sellers cannot place orders
+    if (req.user.role === 'seller' || req.user.role === 'admin') {
+      return res.status(403).json({ 
+        message: "Sellers cannot place orders. Only buyers can purchase products." 
+      });
+    }
+
     const { items } = req.body;
 
     if (!items || items.length === 0) {

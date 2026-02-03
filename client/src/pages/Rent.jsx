@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { formatINR } from '../utils/currency';
-import { ShoppingCart, CheckCircle2, Calendar, Clock, IndianRupee } from 'lucide-react';
+import { ShoppingCart, CheckCircle2, Calendar, Clock, IndianRupee, Search, Filter, X, ChevronDown, Sparkles, TrendingUp, Package } from 'lucide-react';
 
 // Dummy rental data
 const rentalProducts = [
@@ -98,9 +98,17 @@ const rentalProducts = [
 
 function Rent() {
   const [products] = useState(rentalProducts);
+  const [filteredProducts, setFilteredProducts] = useState(rentalProducts);
   const [selectedDurations, setSelectedDurations] = useState({});
   const [selectedDates, setSelectedDates] = useState({});
   const [notification, setNotification] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [sortBy, setSortBy] = useState('featured');
+  const [showFilters, setShowFilters] = useState(false);
+
+  // Get unique categories
+  const categories = ['All', ...new Set(products.map(p => p.category))];
 
   // Set default durations and dates
   useEffect(() => {
@@ -113,6 +121,43 @@ function Rent() {
     setSelectedDurations(initialDurations);
     setSelectedDates(initialDates);
   }, [products]);
+
+  // Filter and sort products
+  useEffect(() => {
+    let result = [...products];
+
+    // Search filter
+    if (searchQuery) {
+      result = result.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Category filter
+    if (selectedCategory !== 'All') {
+      result = result.filter(product => product.category === selectedCategory);
+    }
+
+    // Sort
+    switch (sortBy) {
+      case 'price-low':
+        result.sort((a, b) => a.pricePerDay - b.pricePerDay);
+        break;
+      case 'price-high':
+        result.sort((a, b) => b.pricePerDay - a.pricePerDay);
+        break;
+      case 'name':
+        result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        // featured - keep original order
+        break;
+    }
+
+    setFilteredProducts(result);
+  }, [searchQuery, selectedCategory, sortBy, products]);
 
   const handleDurationChange = (productId, duration) => {
     setSelectedDurations(prev => ({
@@ -164,7 +209,7 @@ function Rent() {
     window.dispatchEvent(new Event('cartUpdated'));
 
     // Show notification
-    setNotification(`${product.name} added to cart!`);
+    setNotification(product.name);
     setTimeout(() => setNotification(null), 3000);
   };
 
@@ -178,108 +223,269 @@ function Rent() {
   };
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 py-8 px-4">
       <div className="container mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="text-center mb-12 animate-fade-in-down">
-          <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
-            Rent Products
+        {/* Hero Section */}
+        <div className="text-center mb-8 space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full text-white text-sm font-semibold shadow-lg animate-fade-in-down">
+            <Sparkles className="w-4 h-4" />
+            <span>Premium Rental Marketplace</span>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+            Rent What You Need
           </h1>
-          <p className="text-gray-600 text-lg">Find quality products for short-term rentals</p>
+          <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto">
+            Access premium products without the commitment. Flexible durations, trusted quality.
+          </p>
+        </div>
+
+        {/* Search and Filter Bar */}
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-8 border border-gray-100">
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Search Bar */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+
+            {/* Filter Button (Mobile) */}
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="md:hidden flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl font-semibold transition-colors"
+            >
+              <Filter className="w-5 h-5" />
+              Filters
+              <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Category Filter (Desktop) */}
+            <div className="hidden md:block">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-6 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer hover:border-blue-300 transition-all"
+              >
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sort By (Desktop) */}
+            <div className="hidden md:block">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-6 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer hover:border-blue-300 transition-all"
+              >
+                <option value="featured">Featured</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="name">Name: A to Z</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Mobile Filters */}
+          {showFilters && (
+            <div className="md:hidden mt-4 pt-4 border-t border-gray-200 space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                >
+                  {categories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Sort By</label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                >
+                  <option value="featured">Featured</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="name">Name: A to Z</option>
+                </select>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Results Count */}
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-gray-600 font-medium">
+            <span className="text-gray-900 font-bold">{filteredProducts.length}</span> {filteredProducts.length === 1 ? 'product' : 'products'} available
+          </p>
+          {(searchQuery || selectedCategory !== 'All') && (
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory('All');
+              }}
+              className="text-blue-600 hover:text-blue-700 font-semibold text-sm flex items-center gap-1"
+            >
+              <X className="w-4 h-4" />
+              Clear filters
+            </button>
+          )}
         </div>
 
         {/* Notification */}
         {notification && (
-          <div className="fixed top-20 right-4 left-4 md:left-auto md:w-96 bg-white rounded-xl shadow-2xl border-l-4 border-green-500 p-4 flex items-center gap-3 z-50 animate-fade-in-down">
-            <CheckCircle2 className="w-6 h-6 text-green-500 flex-shrink-0" />
-            <span className="text-gray-800 font-medium">{notification}</span>
+          <div className="fixed top-20 right-4 left-4 md:left-auto md:w-96 bg-white rounded-2xl shadow-2xl border-l-4 border-green-500 p-4 flex items-center gap-3 z-50 animate-fade-in-down">
+            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <CheckCircle2 className="w-6 h-6 text-green-500" />
+            </div>
+            <div>
+              <p className="text-gray-900 font-semibold">Added to cart!</p>
+              <p className="text-gray-600 text-sm">{notification}</p>
+            </div>
           </div>
         )}
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up">
-          {products.map(product => (
-            <div 
-              key={product.id} 
-              className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100"
-            >
-              {/* Product Image */}
-              <div className="relative h-56 overflow-hidden group">
-                <img 
-                  src={product.image} 
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute top-3 right-3 bg-primary-500 text-white px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-sm bg-opacity-90">
-                  {product.category}
-                </div>
-              </div>
-
-              {/* Product Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1">
-                  {product.name}
-                </h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
-                  {product.description}
-                </p>
-
-                {/* Price Display */}
-                <div className="bg-gradient-to-br from-primary-50 to-purple-50 rounded-xl p-4 mb-4 border border-primary-100">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-extrabold text-primary-600">
-                      {formatINR(getPriceForDuration(product, selectedDurations[product.id] || 'day'))}
-                    </span>
-                    <span className="text-gray-600 font-medium">
-                      {getDurationLabel(selectedDurations[product.id] || 'day')}
-                    </span>
+        {filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProducts.map((product, index) => (
+              <div 
+                key={product.id} 
+                className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 group"
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                {/* Product Image */}
+                <div className="relative h-56 overflow-hidden">
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute top-3 right-3">
+                    <div className="bg-white/95 backdrop-blur-sm text-gray-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                      {product.category}
+                    </div>
+                  </div>
+                  <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                      <TrendingUp className="w-3 h-3" />
+                      Popular
+                    </div>
                   </div>
                 </div>
 
-                {/* Duration Selector */}
-                <div className="mb-4">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                    <Clock className="w-4 h-4 text-primary-500" />
-                    Duration
-                  </label>
-                  <select 
-                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all cursor-pointer hover:border-primary-300"
-                    value={selectedDurations[product.id] || 'day'}
-                    onChange={(e) => handleDurationChange(product.id, e.target.value)}
+                {/* Product Content */}
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
+                    {product.name}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
+                    {product.description}
+                  </p>
+
+                  {/* Price Display */}
+                  <div className="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-xl p-4 mb-4 border border-blue-100 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-2xl" />
+                    <div className="relative">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-3xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                          {formatINR(getPriceForDuration(product, selectedDurations[product.id] || 'day'))}
+                        </span>
+                        <span className="text-gray-600 font-semibold">
+                          {getDurationLabel(selectedDurations[product.id] || 'day')}
+                        </span>
+                      </div>
+                      <div className="mt-1 flex items-center gap-4 text-xs text-gray-500">
+                        <span>Week: {formatINR(product.pricePerWeek)}</span>
+                        <span>Month: {formatINR(product.pricePerMonth)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Duration Selector */}
+                  <div className="mb-4">
+                    <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                      <Clock className="w-4 h-4 text-blue-500" />
+                      Rental Duration
+                    </label>
+                    <select 
+                      className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer hover:border-blue-300 hover:bg-gray-100"
+                      value={selectedDurations[product.id] || 'day'}
+                      onChange={(e) => handleDurationChange(product.id, e.target.value)}
+                    >
+                      <option value="day">1 Day - {formatINR(product.pricePerDay)}</option>
+                      <option value="week">1 Week - {formatINR(product.pricePerWeek)}</option>
+                      <option value="month">1 Month - {formatINR(product.pricePerMonth)}</option>
+                    </select>
+                  </div>
+
+                  {/* Date Picker */}
+                  <div className="mb-5">
+                    <label className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
+                      <Calendar className="w-4 h-4 text-blue-500" />
+                      Start Date
+                    </label>
+                    <input 
+                      type="date"
+                      className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-gray-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer hover:border-blue-300 hover:bg-gray-100"
+                      value={selectedDates[product.id] || ''}
+                      min={new Date().toISOString().split('T')[0]}
+                      onChange={(e) => handleDateChange(product.id, e.target.value)}
+                    />
+                  </div>
+
+                  {/* Add to Cart Button */}
+                  <button 
+                    className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-200 active:scale-95"
+                    onClick={() => addToCart(product)}
                   >
-                    <option value="day">1 Day - {formatINR(product.pricePerDay)}</option>
-                    <option value="week">1 Week - {formatINR(product.pricePerWeek)}</option>
-                    <option value="month">1 Month - {formatINR(product.pricePerMonth)}</option>
-                  </select>
+                    <ShoppingCart className="w-5 h-5" />
+                    Add to Cart
+                  </button>
                 </div>
-
-                {/* Date Picker */}
-                <div className="mb-5">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
-                    <Calendar className="w-4 h-4 text-primary-500" />
-                    Start Date
-                  </label>
-                  <input 
-                    type="date"
-                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-gray-800 font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all cursor-pointer hover:border-primary-300"
-                    value={selectedDates[product.id] || ''}
-                    min={new Date().toISOString().split('T')[0]}
-                    onChange={(e) => handleDateChange(product.id, e.target.value)}
-                  />
-                </div>
-
-                {/* Add to Cart Button */}
-                <button 
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold rounded-xl hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 active:scale-95"
-                  onClick={() => addToCart(product)}
-                >
-                  <ShoppingCart className="w-5 h-5" />
-                  Add to Cart
-                </button>
               </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4">
+              <Package className="w-10 h-10 text-gray-400" />
             </div>
-          ))}
-        </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">No products found</h3>
+            <p className="text-gray-600 mb-6">
+              Try adjusting your search or filters to find what you're looking for
+            </p>
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory('All');
+              }}
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
+            >
+              Clear all filters
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -252,6 +252,16 @@ function Home() {
               onClick={() => navigate('/register')}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-green-200 rounded-full -mr-16 -mt-16 opacity-50 group-hover:scale-150 transition-transform"></div>
+              <Dumbbell className="w-12 h-12 text-green-600 mb-4 relative z-10" />
+              <h3 className="text-xl font-bold text-gray-900 mb-2 relative z-10">Sports & Fitness</h3>
+              <p className="text-gray-600 relative z-10">Gear up for your active lifestyle</p>
+            </div>
+            
+            <div 
+              className="group relative bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-8 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden"
+              onClick={() => navigate('/register')}
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-green-200 rounded-full -mr-16 -mt-16 opacity-50 group-hover:scale-150 transition-transform"></div>
               <HomeIcon className="w-12 h-12 text-green-600 mb-4 relative z-10" />
               <h3 className="text-xl font-bold text-gray-900 mb-2 relative z-10">Home & Living</h3>
               <p className="text-gray-600 relative z-10">Beautiful home essentials</p>

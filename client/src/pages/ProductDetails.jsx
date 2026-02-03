@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProductById, getCurrentUser, createOrder } from '../api';
+import { useAuth } from '../contexts/AuthContext';
+import { getProductById, createOrder } from '../api';
 import { formatINR } from '../utils/currency';
 import { 
   ShoppingCart, 
@@ -25,17 +26,16 @@ import {
 function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user: currentUser, isSeller } = useAuth();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('');
-  const [currentUser, setCurrentUser] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    setCurrentUser(getCurrentUser());
     fetchProduct();
   }, [id]);
 
@@ -162,7 +162,10 @@ function ProductDetails() {
     );
   }
 
-  const isOwnProduct = currentUser && product.seller?._id === currentUser.id;
+  // Check if current user is the seller of this product
+  const isOwnProduct = currentUser && product.seller && 
+    (product.seller._id === currentUser._id || product.seller._id === currentUser.id || 
+     product.seller === currentUser._id || product.seller === currentUser.id);
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
@@ -357,8 +360,24 @@ function ProductDetails() {
               {/* Action Buttons */}
               <div className="space-y-3">
                 {isOwnProduct ? (
-                  <div className="bg-gray-100 text-gray-500 px-6 py-4 rounded-xl text-center font-bold">
-                    This is your product
+                  <div className="space-y-3">
+                    <div className="bg-blue-50 border-2 border-blue-200 text-blue-700 px-6 py-4 rounded-xl text-center font-semibold flex items-center justify-center gap-2">
+                      <Package className="w-5 h-5" />
+                      This is your product
+                    </div>
+                    <button
+                      onClick={() => navigate(`/seller/products/edit/${product._id}`)}
+                      className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-bold rounded-xl hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                    >
+                      <Package className="w-5 h-5" />
+                      Edit Product
+                    </button>
+                    <button
+                      onClick={() => navigate('/seller/products')}
+                      className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-white text-primary-600 font-bold rounded-xl border-2 border-primary-500 hover:bg-primary-50 transition-all"
+                    >
+                      Back to My Products
+                    </button>
                   </div>
                 ) : (
                   <>

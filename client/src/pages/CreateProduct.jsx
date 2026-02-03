@@ -244,7 +244,7 @@ function CreateProduct() {
       
       // Navigate after delay
       setTimeout(() => {
-        navigate('/shop');
+        navigate('/seller/products');
       }, 2000);
     } catch (err) {
       console.error('Product creation error:', err);
