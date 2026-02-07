@@ -1,6 +1,26 @@
-node_modules
-.env
-.DS_Store
-dist
-build
+# ===============================
+# Dependencies & build output
+# ===============================
+node_modules/
+dist/
+build/
+
+# ===============================
+# Logs & OS junk
+# ===============================
 *.log
+.DS_Store
+
+# ===============================
+# Environment files (secrets)
+# ===============================
+.env
+.env.*
+
+# ===============================
+# AI Agents / Skills / Editors
+# ===============================
+.agent/
+.agents/
+.claude/
+.cursor/
